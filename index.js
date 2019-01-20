@@ -3,9 +3,12 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const cors = require('cors');
+app.use(cors());
 
 // Custom routes
-const monzo = require('./monzo')(app);
+require('./monzo')(app);
+require('./gcp')(app);
 
 app.get('/api/', (req, res) => res.send('Hello World!'));
 
