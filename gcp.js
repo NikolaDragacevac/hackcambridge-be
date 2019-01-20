@@ -22,20 +22,16 @@ module.exports = function(app) {
     const detections = result.textAnnotations;
     const textLines = await lineSegAlg.initLineSegmentation(result);
 
-    const receiptItems = textLines.filter(line => /[£|$|€]\d+.\d\d/.test(line));
-    console.log(receiptItems);
+    const receiptItems = textLines.filter(line => /([A-Z]+(\s?[A-Z]+?)*)\s*([£|$|€]\d+.\d\d)/.test(line) && !line.includes("DUE"));
 
-    //TODO finish up formatting
     const formattedStrings = [];
     receiptItems.forEach(item => {
-      console.log(item);
       const itemMatches = item.match(/([A-Z]+(\s?[A-Z]+?)*)\s*([£|$|€]\d+.\d\d)/);
       formattedStrings.push({
-        name: itemMatches[0],
-        price: itemMatches[2]
+        name: itemMatches[1],
+        price: itemMatches[3]
       });
     });
-    console.log(formattedStrings);
 
     res.status(200).send(formattedStrings);
   });
